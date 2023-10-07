@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('stage1') {
+            steps {
+                echo 'gitcheckout'
+                git 'https://github.com/nehrusai/sysfoo.git' 
+            }
+        }
+        stage('stage2') {
+            steps {
+                echo 'maven clean'
+                sh 'mvn clean'
+            }
+        }
+        stage('stage3') {
+            steps {
+                echo 'maven package'
+                sh 'mvn package' 
+            }
+        }
+        stage('stage4') {
+            steps {
+                echo 'deploy'
+                deploy adapters: [tomcat9(credentialsId: 'tomcat967', path: '', url: 'http://13.127.238.241:8081')], contextPath: 'dev2', war: '**/*.war'                
+            }
+        }
+    }
+}
